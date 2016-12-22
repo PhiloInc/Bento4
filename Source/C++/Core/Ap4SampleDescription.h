@@ -304,7 +304,9 @@ public:
                              AP4_UI08                         nalu_length_size,
                              const AP4_Array<AP4_DataBuffer>& sequence_parameters,
                              const AP4_Array<AP4_DataBuffer>& picture_parameters);
-    
+
+    ~AP4_AvcSampleDescription() { delete m_AvccAtom; }
+
     // accessors
     AP4_UI08 GetConfigurationVersion() const { return m_AvccAtom->GetConfigurationVersion(); }
     AP4_UI08 GetProfile() const { return m_AvccAtom->GetProfile(); }
