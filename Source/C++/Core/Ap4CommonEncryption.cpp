@@ -1757,6 +1757,7 @@ AP4_CencEncryptingProcessor::CreateFragmentHandler(AP4_TrakAtom*      trak,
                 if (tfhd_flags & AP4_TFHD_FLAG_SAMPLE_DESCRIPTION_INDEX_PRESENT) {
                     sample_description_index = tfhd->GetSampleDescriptionIndex();
                 } else {
+                    if (trex == NULL) return NULL;
                     sample_description_index = trex->GetDefaultSampleDescriptionIndex();
                 }
                 if (sample_description_index > 0) {
