@@ -178,7 +178,11 @@ AP4_Processor::ProcessFragments(AP4_MoovAtom*              moov,
         for (;AP4_Atom* child = moof->GetChild(AP4_ATOM_TYPE_TRAF, handlers.ItemCount());) {
             AP4_ContainerAtom* traf = AP4_DYNAMIC_CAST(AP4_ContainerAtom, child);
             AP4_TfhdAtom* tfhd = AP4_DYNAMIC_CAST(AP4_TfhdAtom, traf->GetChild(AP4_ATOM_TYPE_TFHD));
-            
+            if (tfhd == NULL) {
+                AP4_Debug("ERROR: tfhd is NULL while iterating traf atoms\n");
+                return AP4_ERROR_INVALID_FORMAT;
+            }
+
             // find the 'trak' for this track
             AP4_TrakAtom* trak = NULL;
             for (AP4_List<AP4_Atom>::Item* child_item = moov->GetChildren().FirstItem();
@@ -259,7 +263,11 @@ AP4_Processor::ProcessFragments(AP4_MoovAtom*              moov,
             AP4_ContainerAtom* traf = AP4_DYNAMIC_CAST(AP4_ContainerAtom, moof->GetChild(AP4_ATOM_TYPE_TRAF, i));
             if (traf == NULL) continue;
             AP4_TfhdAtom* tfhd = AP4_DYNAMIC_CAST(AP4_TfhdAtom, traf->GetChild(AP4_ATOM_TYPE_TFHD));
-            
+            if (tfhd == NULL) {
+                AP4_Debug("ERROR: tfhd is NULL while iterating all tracks\n");
+                return AP4_ERROR_INVALID_FORMAT;
+            }
+
             // compute the base data offset
             AP4_UI64 base_data_offset;
             if (tfhd->GetFlags() & AP4_TFHD_FLAG_BASE_DATA_OFFSET_PRESENT) {

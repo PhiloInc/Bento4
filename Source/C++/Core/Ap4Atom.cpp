@@ -760,7 +760,12 @@ AP4_AtomListWriter::Action(AP4_Atom* atom) const
     m_Stream.Tell(after);
 
     AP4_UI64 bytes_written = after-before;
-    AP4_ASSERT(bytes_written <= atom->GetSize());
+    // SV: Replaced AP4_ASSERT() with error check to prevent crash in production
+    // AP4_ASSERT(bytes_written <= atom->GetSize());
+    if (bytes_written > atom->GetSize()) {
+        AP4_Debug("ERROR: bytes_written (%llu) exceeds atom size (%llu)\n", bytes_written, atom->GetSize());
+        return AP4_FAILURE;
+    }
     if (bytes_written < atom->GetSize()) {
         AP4_Debug("WARNING: atom serialized to fewer bytes than declared size\n");
         AP4_UI64 padding = atom->GetSize()-bytes_written;

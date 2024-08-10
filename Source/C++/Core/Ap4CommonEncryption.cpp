@@ -1757,7 +1757,9 @@ AP4_CencEncryptingProcessor::CreateFragmentHandler(AP4_TrakAtom*      trak,
                 if (tfhd_flags & AP4_TFHD_FLAG_SAMPLE_DESCRIPTION_INDEX_PRESENT) {
                     sample_description_index = tfhd->GetSampleDescriptionIndex();
                 } else {
-                    sample_description_index = trex->GetDefaultSampleDescriptionIndex();
+                    if (trex) {
+                      sample_description_index = trex->GetDefaultSampleDescriptionIndex();
+                    }
                 }
                 if (sample_description_index > 0) {
                     clear_sample_description_index = sample_description_index+stsd->GetSampleDescriptionCount()/2;
@@ -2447,7 +2449,10 @@ AP4_CencDecryptingProcessor::CreateFragmentHandler(AP4_TrakAtom*      trak,
             AP4_CencTrackDecrypter* track_decrypter = 
                 AP4_DYNAMIC_CAST(AP4_CencTrackDecrypter, m_TrackHandlers[i]);
             if (track_decrypter) {
-                unsigned int index = trex->GetDefaultSampleDescriptionIndex();
+                unsigned int index = 0;
+                if (trex) {
+                    index = trex->GetDefaultSampleDescriptionIndex();
+                }
                 unsigned int tfhd_flags = tfhd->GetFlags();
                 if (tfhd_flags & AP4_TFHD_FLAG_SAMPLE_DESCRIPTION_INDEX_PRESENT) {
                     index = tfhd->GetSampleDescriptionIndex();
@@ -2878,7 +2883,9 @@ AP4_CencSampleInfoTable::Create(AP4_UI08                  flags,
         AP4_Atom* atom = item->GetData();
         if (atom->GetType() == AP4_ATOM_TYPE_TRUN) {
             AP4_TrunAtom* trun = AP4_DYNAMIC_CAST(AP4_TrunAtom, atom);
-            sample_info_count += trun->GetEntries().ItemCount();
+            if (trun) {
+              sample_info_count += trun->GetEntries().ItemCount();
+            }
         }
     }
     
@@ -2906,6 +2913,11 @@ AP4_CencSampleInfoTable::Create(AP4_UI08                  flags,
         AP4_Atom* atom = item->GetData();
         if (atom->GetType() == AP4_ATOM_TYPE_TRUN) {
             AP4_TrunAtom* trun = AP4_DYNAMIC_CAST(AP4_TrunAtom, atom);
+            if (trun == NULL) {
+                AP4_Debug("ERROR: trun is NULL while traversing traf\n");
+                result = AP4_ERROR_INVALID_FORMAT;
+                goto end;
+            }
 
             if (saio_index == 0) {
                 aux_info_data.Seek(aux_info_data_offset+saio.GetEntries()[0]);
