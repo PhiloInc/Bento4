@@ -1757,8 +1757,9 @@ AP4_CencEncryptingProcessor::CreateFragmentHandler(AP4_TrakAtom*      trak,
                 if (tfhd_flags & AP4_TFHD_FLAG_SAMPLE_DESCRIPTION_INDEX_PRESENT) {
                     sample_description_index = tfhd->GetSampleDescriptionIndex();
                 } else {
-                    if (trex == NULL) return NULL;
-                    sample_description_index = trex->GetDefaultSampleDescriptionIndex();
+                    if (trex) {
+                      sample_description_index = trex->GetDefaultSampleDescriptionIndex();
+                    }
                 }
                 if (sample_description_index > 0) {
                     clear_sample_description_index = sample_description_index+stsd->GetSampleDescriptionCount()/2;
@@ -2448,7 +2449,10 @@ AP4_CencDecryptingProcessor::CreateFragmentHandler(AP4_TrakAtom*      trak,
             AP4_CencTrackDecrypter* track_decrypter = 
                 AP4_DYNAMIC_CAST(AP4_CencTrackDecrypter, m_TrackHandlers[i]);
             if (track_decrypter) {
-                unsigned int index = trex->GetDefaultSampleDescriptionIndex();
+                unsigned int index = 0;
+                if (trex) {
+                    index = trex->GetDefaultSampleDescriptionIndex();
+                }
                 unsigned int tfhd_flags = tfhd->GetFlags();
                 if (tfhd_flags & AP4_TFHD_FLAG_SAMPLE_DESCRIPTION_INDEX_PRESENT) {
                     index = tfhd->GetSampleDescriptionIndex();
