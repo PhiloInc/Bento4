@@ -180,7 +180,7 @@ AP4_Processor::ProcessFragments(AP4_MoovAtom*              moov,
             AP4_TfhdAtom* tfhd = AP4_DYNAMIC_CAST(AP4_TfhdAtom, traf->GetChild(AP4_ATOM_TYPE_TFHD));
             if (tfhd == NULL) {
                 AP4_Debug("ERROR: tfhd is NULL while iterating traf atoms\n");
-                return AP4_FAILURE;
+                return AP4_ERROR_INVALID_FORMAT;
             }
 
             // find the 'trak' for this track
@@ -265,7 +265,7 @@ AP4_Processor::ProcessFragments(AP4_MoovAtom*              moov,
             AP4_TfhdAtom* tfhd = AP4_DYNAMIC_CAST(AP4_TfhdAtom, traf->GetChild(AP4_ATOM_TYPE_TFHD));
             if (tfhd == NULL) {
                 AP4_Debug("ERROR: tfhd is NULL while iterating all tracks\n");
-                return AP4_FAILURE;
+                return AP4_ERROR_INVALID_FORMAT;
             }
 
             // compute the base data offset

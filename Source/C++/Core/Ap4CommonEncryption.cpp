@@ -2883,7 +2883,9 @@ AP4_CencSampleInfoTable::Create(AP4_UI08                  flags,
         AP4_Atom* atom = item->GetData();
         if (atom->GetType() == AP4_ATOM_TYPE_TRUN) {
             AP4_TrunAtom* trun = AP4_DYNAMIC_CAST(AP4_TrunAtom, atom);
-            sample_info_count += trun->GetEntries().ItemCount();
+            if (trun) {
+              sample_info_count += trun->GetEntries().ItemCount();
+            }
         }
     }
     
@@ -2911,6 +2913,11 @@ AP4_CencSampleInfoTable::Create(AP4_UI08                  flags,
         AP4_Atom* atom = item->GetData();
         if (atom->GetType() == AP4_ATOM_TYPE_TRUN) {
             AP4_TrunAtom* trun = AP4_DYNAMIC_CAST(AP4_TrunAtom, atom);
+            if (trun == NULL) {
+                AP4_Debug("ERROR: trun is NULL while traversing traf\n");
+                result = AP4_ERROR_INVALID_FORMAT;
+                goto end;
+            }
 
             if (saio_index == 0) {
                 aux_info_data.Seek(aux_info_data_offset+saio.GetEntries()[0]);
