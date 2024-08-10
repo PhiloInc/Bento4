@@ -763,7 +763,7 @@ AP4_AtomListWriter::Action(AP4_Atom* atom) const
     // SV: Replaced AP4_ASSERT() with error check to prevent crash in production
     // AP4_ASSERT(bytes_written <= atom->GetSize());
     if (bytes_written > atom->GetSize()) {
-        AP4_Debug("ERROR: bytes_written (%d) exceeds atom size (%d)\n", bytes_written, atom->GetSize());
+        AP4_Debug("ERROR: bytes_written (%llu) exceeds atom size (%llu)\n", bytes_written, atom->GetSize());
         return AP4_FAILURE;
     }
     if (bytes_written < atom->GetSize()) {
